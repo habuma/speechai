@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Audio</title>
+    <script th:src="@{/recorder.js}"></script>
+    <script>
+        const hearWhisper = (heard, answer) => {
+            const transcriptionDiv = document.getElementById('transcription');
+            transcriptionDiv.innerHTML += '<b>Heard via Whisper: </b>' + (heard + '<br/>');
+            transcriptionDiv.innerHTML += '<b>Answer from AI: </b>' + (answer + '<br/>');
+        };
+
+        const initUIEvents = () => {
+            Recorder.initMediaRecorder(hearWhisper);
+            let a = document.getElementById('listenWhisper');
+            a.addEventListener('mousedown', Recorder.startListening);
+            a.addEventListener('mouseup', Recorder.stopListening);
+        };
+
+        window.addEventListener('load', initUIEvents);
+    </script>
+</head>
+
+<body>
+    <p>Press and hold the "Listen" button while you talk.
+        Release the button to get a transcription of what you said,
+        as well as a response from AI.</p>
+    <p>The "Listen button uses the browser's MediaRecorder to
+       record audio, then sends it to the backend, which in turn sends it
+       to OpenAI's Whisper API for speech-to-text processing.</p>
+
+    <button id="listenWhisper">Listen</button>
+    <hr/>
+    <div id="transcription"></div>
+
+
+</body>
+</html>
