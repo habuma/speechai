@@ -4,6 +4,10 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/ask")
@@ -22,6 +28,9 @@ public class AskController {
     private final WhisperClient whisperClient;
     private final TTSClient ttsClient;
     private final ChatClient chatClient;
+
+    @Value("classpath:prompt-template.st")
+    private Resource promptTemplateResource;
 
     public AskController(
             WhisperClient whisperClient,
@@ -41,8 +50,11 @@ public class AskController {
     @PostMapping
     public @ResponseBody RecordingResponse process(@RequestParam("audio") MultipartFile blob) {
         String input = whisperClient.transcribe(blob.getResource());
+        PromptTemplate promptTemplate = new PromptTemplate(promptTemplateResource);
+        Prompt prompt = promptTemplate.create(Map.of("input", input));
+
         String output = !input.trim().isEmpty()
-                ? chatClient.call("Respond to the following input, keeping your response to no more than 3 sentences: " + input)
+                ? chatClient.call(prompt).getResult().getOutput().getContent()
                 : "Sorry, I didn't catch that.";
         byte[] ttsBytes = ttsClient.synthesize(output);
         String base64 = Base64.encodeBase64String(ttsBytes);
