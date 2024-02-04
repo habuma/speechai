@@ -1,8 +1,10 @@
-# Spring and the Whisper API
+# Spring AI, Whisper, and Text-to-Speech
 
 This is a sample application showing how to capture audio from a webpage,
 submit it to a Spring MVC controller, and submit it to OpenAI's Whisper API
-to get a transcription.
+to get a transcription. That transcription is then sent to OpenAI's 
+gpt-3.5-turbo model to get a response. Finally, the response is then sent to the
+text-to-speech API to get an audio response that is returned to the client.
 
 ## Building and running the application
 
@@ -18,7 +20,7 @@ Or you can build it to an executable JAR file and then run it:
 
 ```
 % ./mvnw package
-% java -jar target/speech-to-text-0.0.1-SNAPSHOT.jar
+% java -jar target/speechai-0.0.1-SNAPSHOT.jar
 ```
 
 Before running the application, though, you'll need to obtain an OpenAI API
@@ -30,17 +32,11 @@ key and set it to the `OPENAI_API_KEY` environment variable. E.g.,
 
 ## Using the application
 
-Once the application is running, open http://localhost:8080/transcribe in your
-web browser. Press and hold either of the "Listen" buttons while talking.</p>
+Once the application is running, open http://localhost:8080/ask in your
+web browser. Press and hold the "Listen" buttons while talking.
 
 After releasing the "Listen (Whisper API)" button, the audio captured by the
 browser will be sent to the  server and from there to OpenAI's Whisper API for
-transcription. Then, the transcription will be sent back to the client and 
-appended to a `<div>` just below the button. This button will work in any
-browser, but it requires an OpenAI API key.
-
-The "Listen (Browser)" button uses the browser's built-in speech recognition
-capability. It only works in browsers that support this feature. It does not
-require an OpenAI API key.
-
-Press either button as often as you like.
+transcription. From there the transcritpion will be sent to OpenAI's gpt-3.5-turbo
+model to get a response. Finally, the response will be sent to the text-to-speech
+API to get an audio response that is returned to the client.

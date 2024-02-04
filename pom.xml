@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>habuma</groupId>
-    <artifactId>speech-to-text</artifactId>
+    <artifactId>speechai</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>speech-to-text</name>
-    <description>speech-to-text</description>
+    <name>speechai</name>
+    <description>speechai</description>
     <properties>
         <java.version>17</java.version>
         <SPRING-AI-VERSION>0.8.0-SNAPSHOT</SPRING-AI-VERSION>
