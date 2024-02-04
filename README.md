@@ -6,6 +6,11 @@ to get a transcription. That transcription is then sent to OpenAI's
 gpt-3.5-turbo model to get a response. Finally, the response is then sent to the
 text-to-speech API to get an audio response that is returned to the client.
 
+Note that at the moment, the prompt sent to the gpt-3.5-turbo model includes
+text asking for the response to be kept brief. At this time, no conversational
+memory or RAG is applied to the prompt for context (but that could change in
+the future).
+
 ## Building and running the application
 
 Before running the application, you'll need to obtain an OpenAI API
