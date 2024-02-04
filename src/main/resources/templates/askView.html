@@ -3,11 +3,13 @@
 <head>
     <title>Audio</title>
     <script th:src="@{/recorder.js}"></script>
+    <script th:src="@{/tts.js}"></script>
     <script>
         const hearWhisper = (heard, answer) => {
             const transcriptionDiv = document.getElementById('transcription');
             transcriptionDiv.innerHTML += '<b>Heard via Whisper: </b>' + (heard + '<br/>');
             transcriptionDiv.innerHTML += '<b>Answer from AI: </b>' + (answer + '<br/>');
+            TTS.playAudio(answer);
         };
 
         const initUIEvents = () => {
