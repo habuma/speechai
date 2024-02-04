@@ -41,7 +41,9 @@ public class AskController {
     @PostMapping
     public @ResponseBody RecordingResponse process(@RequestParam("audio") MultipartFile blob) {
         String input = whisperClient.transcribe(blob.getResource());
-        String output = !input.trim().isEmpty() ? chatClient.call(input) : "Sorry, I didn't catch that.";
+        String output = !input.trim().isEmpty()
+                ? chatClient.call("Respond to the following input, keeping your response to no more than 3 sentences: " + input)
+                : "Sorry, I didn't catch that.";
         byte[] ttsBytes = ttsClient.synthesize(output);
         String base64 = Base64.encodeBase64String(ttsBytes);
         return new RecordingResponse(input, output, base64);
