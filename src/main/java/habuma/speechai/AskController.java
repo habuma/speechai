@@ -1,5 +1,6 @@
 package habuma.speechai;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
@@ -40,24 +41,13 @@ public class AskController {
     @PostMapping
     public @ResponseBody RecordingResponse process(@RequestParam("audio") MultipartFile blob) {
         String input = whisperClient.transcribe(blob.getResource());
-        if (!input.trim().isEmpty()) {
-            String response = chatClient.call(input);
-            return new RecordingResponse(input, response);
-        }
-        return new RecordingResponse(input, "Sorry, I didn't catch that.");
+        String output = !input.trim().isEmpty() ? chatClient.call(input) : "Sorry, I didn't catch that.";
+        byte[] ttsBytes = ttsClient.synthesize(output);
+        String base64 = Base64.encodeBase64String(ttsBytes);
+        return new RecordingResponse(input, output, base64);
     }
 
-    @GetMapping(path="/tts", produces = "audio/mpeg")
-    public @ResponseBody byte[] ttsGet() {
-        return ttsClient.synthesize("Hello, how can I help you?");
-    }
-
-    @PostMapping(path="/tts", consumes="application/json", produces = "audio/mpeg")
-    public @ResponseBody byte[] tts(@RequestBody TTSRequest request) {
-        return ttsClient.synthesize(request.text());
-    }
-
-    public static final record RecordingResponse(String input, String response) {}
+    public static final record RecordingResponse(String input, String response, String ttsBase64) {}
 
     public static final record TTSRequest(String text) {}
 

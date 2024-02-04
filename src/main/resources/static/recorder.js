@@ -27,7 +27,7 @@ const Recorder = {
         })
             .then(async (response) => {
                 const answer = await response.json();
-                this.onHearHandler(answer.input, answer.response);
+                this.onHearHandler(answer.input, answer.response, answer.ttsBase64);
             })
             .catch((err) => {
                 console.error(err);
