@@ -8,6 +8,13 @@ text-to-speech API to get an audio response that is returned to the client.
 
 ## Building and running the application
 
+Before running the application, you'll need to obtain an OpenAI API
+key and set it to the `OPENAI_API_KEY` environment variable. E.g.,
+
+```
+% export OPENAI_API_KEY=st-...
+```
+
 This is a Spring Boot application built with Maven. Therefore, you can run
 the application just like any other Spring Boot application using the Spring
 Boot Maven plugin:
@@ -21,13 +28,6 @@ Or you can build it to an executable JAR file and then run it:
 ```
 % ./mvnw package
 % java -jar target/speechai-0.0.1-SNAPSHOT.jar
-```
-
-Before running the application, though, you'll need to obtain an OpenAI API
-key and set it to the `OPENAI_API_KEY` environment variable. E.g.,
-
-```
-% export OPENAI_API_KEY=st-...
 ```
 
 ## Using the application
