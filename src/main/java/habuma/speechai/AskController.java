@@ -11,7 +11,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,19 +24,16 @@ public class AskController {
 
     private static final Logger log = LoggerFactory.getLogger(AskController.class);
 
-    private final WhisperClient whisperClient;
-    private final TTSClient ttsClient;
+    private final SpeechClient speechClient;
     private final ChatClient chatClient;
 
     @Value("classpath:prompt-template.st")
     private Resource promptTemplateResource;
 
     public AskController(
-            WhisperClient whisperClient,
-            TTSClient ttsClient,
+            SpeechClient speechClient,
             ChatClient chatClient) {
-        this.whisperClient = whisperClient;
-        this.ttsClient = ttsClient;
+        this.speechClient = speechClient;
         this.chatClient = chatClient;
     }
 
@@ -49,15 +45,19 @@ public class AskController {
 
     @PostMapping
     public @ResponseBody RecordingResponse process(@RequestParam("audio") MultipartFile blob) {
-        String input = whisperClient.transcribe(blob.getResource());
+        String input = speechClient.transcribe(blob.getResource());
+        log.info("Heard: " + input);
         PromptTemplate promptTemplate = new PromptTemplate(promptTemplateResource);
         Prompt prompt = promptTemplate.create(Map.of("input", input));
 
         String output = !input.trim().isEmpty()
                 ? chatClient.call(prompt).getResult().getOutput().getContent()
                 : "Sorry, I didn't catch that.";
-        byte[] ttsBytes = ttsClient.synthesize(output);
+
+        log.info("Response: " + output);
+        byte[] ttsBytes = speechClient.synthesize(output);
         String base64 = Base64.encodeBase64String(ttsBytes);
+        log.info("TTS Bytes: " + ttsBytes.length + " bytes");
         return new RecordingResponse(input, output, base64);
     }
 
