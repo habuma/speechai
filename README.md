@@ -17,7 +17,7 @@ Before running the application, you'll need to obtain an OpenAI API
 key and set it to the `OPENAI_API_KEY` environment variable. E.g.,
 
 ```
-% export OPENAI_API_KEY=st-...
+% export OPENAI_API_KEY=sk-...
 ```
 
 This is a Spring Boot application built with Maven. Therefore, you can run
@@ -45,3 +45,14 @@ browser will be sent to the  server and from there to OpenAI's Whisper API for
 transcription. From there the transcritpion will be sent to OpenAI's gpt-3.5-turbo
 model to get a response. Finally, the response will be sent to the text-to-speech
 API to get an audio response that is returned to the client.
+
+## A few notes...
+
+- At this time, Spring AI does not (yet) support integration with OpenAI's
+Whisper or TTS APIs. Therefore, this application is invoking those APIs directly
+using Spring's `RestClient` in the `SpeechClient` class.
+- I've tested this on Chrome, Firefox, and Safari web browsers. It works on
+all three, but Safari doesn't seem to capture everything said when the "Listen"
+button is held (for some reason). Most of my testing has been with Chrome and
+it works incredibly well. I welcome any insight into why it doesn't work as well
+with Safari.
