@@ -15,7 +15,7 @@
     <description>speechai</description>
     <properties>
         <java.version>17</java.version>
-        <SPRING-AI-VERSION>0.8.0-SNAPSHOT</SPRING-AI-VERSION>
+        <SPRING-AI-VERSION>1.0.0-SNAPSHOT</SPRING-AI-VERSION>
     </properties>
     <dependencies>
         <dependency>
